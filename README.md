@@ -1,27 +1,29 @@
 # To build and run this project :
 
-# First step : Build project
-```bash
-  mkdir build
-  cd build
-  cmake ..
-```
+# First step : Clone the project
 
 # Second step : Install assimp
 ```bash
   path/to/your/project/folder
-  cd build
+  cd external
   git clone https://github.com/assimp/assimp.git
   cd assimp
   cmake CMakeLists.txt
   cmake --build .
 ```
 
-# Third step : Run project
+# Third step : Build project
 ```bash
   path/to/your/project/folder
+  mkdir build
   cd build
+  cmake ..
   make -j
-  ./launch-TP1.sh
 ```
-
+# Fourth step : Launch project
+```bash
+   path/to/your/project/folder
+   cd build
+   make -j
+  ./launch-TP1.sh
+``
