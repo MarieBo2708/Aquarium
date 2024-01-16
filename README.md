@@ -12,7 +12,14 @@
   cmake --build .
 ```
 
-if you have the error : -lassimp is not found, modify the CMakeLists.txt of the project into the "include directories" section by adding the absolute path to the assimp library that you previously installed.
+if you have the error : 
+```bash
+cannot find -lassimp, no such file or directory
+```
+modify the CMakeLists.txt of the project into the "include directories" section by adding the absolute path to the assimp library that you previously installed :
+```bash
+-L/absolute/path/to/assimp/folder/bin -lassimp
+```
 
 # Third step : Build project
 ```bash
