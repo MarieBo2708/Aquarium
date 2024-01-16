@@ -3,7 +3,7 @@
 layout (location = 0) in vec3 waterVertices;
 layout (location = 1) in vec3 waterNormals;
 layout (location = 2) in vec3 surfaceNormals;
-layout (location = 3) in vec3 surfaceVertices;
+//layout (location = 9) in vec3 surfaceVertices;
 
 
 out vec3 fragPos;
@@ -13,6 +13,8 @@ out vec3 surface ;
 out vec4 projectedTexCoords ;
 out vec3 normals;
 out vec3 surface_normals;
+out vec3 caustique ;
+out vec4 clipSpace ;
 
 uniform mat4 ModelMatrix;
 uniform mat4 ViewMatrix;
@@ -113,10 +115,10 @@ void main(){
     float waveFrequency = 3 ;
     float waveAmplitude = 0.1 ;
     modifiedPosition = waterVertices;
-    //surface = surfaceVertices ;
+    caustique = waterVertices;
+    
     vec4 worldPos = ModelMatrix * ProjectionMatrix * ViewMatrix * vec4(modifiedPosition, 1.);
     gl_ClipDistance[0] = dot(clippingPlane, worldPos);
-    vec3 surf = surfaceVertices ;
     if (modifiedPosition.y > -0.4) {
             modifiedPosition.y += waveAmplitude * sin(waveFrequency * time + modifiedPosition.x + modifiedPosition.z)/20;
     }
@@ -126,22 +128,54 @@ void main(){
             vec2 diff = vec2(modifiedPosition.x, modifiedPosition.z);
     
     }
+    float hauteur; 
+    if (waterVertices.y < -0.4) {
+            caustique.y = -0.495 + 0.79 + waveAmplitude * sin(waveFrequency * time + waterVertices.x + waterVertices.z)/20;
+    }
+
+    if(waterVertices.y < 0){
+        vec3 intersectionBis = vec3(intersection.x, -0.495, intersection.z);
+        vec3 firstIntersectionBis = vec3(firstIntersection.x, -0.495, firstIntersection.z);
+        vec3 intersectionBis1 = vec3(intersection1.x, -0.495, intersection1.z);
+        vec3 firstIntersectionBis1 = vec3(firstIntersection1.x, -0.495, firstIntersection1.z);
+        vec3 intersectionBis2 = vec3(intersection2.x, -0.495, intersection2.z);
+        vec3 firstIntersectionBis2 = vec3(firstIntersection2.x, -0.495, firstIntersection2.z);
+        vec3 intersectionBis3 = vec3(intersection3.x, -0.495, intersection3.z);
+        vec3 firstIntersectionBis3 = vec3(firstIntersection3.x, -0.495, firstIntersection3.z);
+        float height = (onde(waterVertices, intersectionBis, firstIntersectionBis, propagation, amplitude) + onde(waterVertices, intersectionBis1, firstIntersectionBis1, propagation1, amplitude1) + onde(waterVertices, intersectionBis2, firstIntersectionBis2, propagation2, amplitude2) + onde(waterVertices, intersectionBis3, firstIntersectionBis3, propagation3, amplitude3))/4; 
+        caustique.y += height * 2.5 ;
+        if(caustique.y > 0.3 && caustique.y < 0.305){
+            caustique.y = -0.495 ;
+        }
+    }
+    if(waterVertices.y > 0){
+        vec3 intersectionBis = vec3(intersection.x, intersection.y, intersection.z);
+        vec3 firstIntersectionBis = vec3(firstIntersection.x, firstIntersection.y, firstIntersection.z);
+        vec3 intersectionBis1 = vec3(intersection1.x, intersection1.y, intersection1.z);
+        vec3 firstIntersectionBis1 = vec3(firstIntersection1.x, firstIntersection1.y, firstIntersection1.z);
+        vec3 intersectionBis2 = vec3(intersection2.x, intersection2.y, intersection2.z);
+        vec3 firstIntersectionBis2 = vec3(firstIntersection2.x, firstIntersection2.y, firstIntersection2.z);
+        vec3 intersectionBis3 = vec3(intersection3.x, intersection3.y, intersection3.z);
+        vec3 firstIntersectionBis3 = vec3(firstIntersection3.x, firstIntersection3.y, firstIntersection3.z);
+
+        
+        float height = (onde(waterVertices, intersectionBis, firstIntersectionBis, propagation, amplitude) + onde(waterVertices, intersectionBis1, firstIntersectionBis1, propagation1, amplitude1) + onde(waterVertices, intersectionBis2, firstIntersectionBis2, propagation2, amplitude2) + onde(waterVertices, intersectionBis3, firstIntersectionBis3, propagation3, amplitude3))/4; 
+        caustique.y += height * 2.5 ;
+        if(caustique.y > 0.3 && caustique.y < 0.305){
+            caustique.y = -0.045 ;
+        }
+    }
     if (modifiedPosition.y > -0.4){
         
-        float hauteur = (onde(modifiedPosition, intersection, firstIntersection, propagation, amplitude) + onde(modifiedPosition, intersection1, firstIntersection1, propagation1, amplitude1) + onde(modifiedPosition, intersection2, firstIntersection2, propagation2, amplitude2) + onde(modifiedPosition, intersection3, firstIntersection3, propagation3, amplitude3))/4; 
+        hauteur = (onde(modifiedPosition, intersection, firstIntersection, propagation, amplitude) + onde(modifiedPosition, intersection1, firstIntersection1, propagation1, amplitude1) + onde(modifiedPosition, intersection2, firstIntersection2, propagation2, amplitude2) + onde(modifiedPosition, intersection3, firstIntersection3, propagation3, amplitude3))/4; 
         modifiedPosition.y += 2.5*hauteur ;
         surface = modifiedPosition;
         UVS = vec2(surface.x + 0.495, surface.z + 0.495);
     }
-    //projectedTexCoords = ProjectionMatrix * ViewMatrix * ModelMatrix * vec4(surface, 1.0);
-    if (modifiedPosition.y <= 0.8){
-          fragPos = vec3(ModelMatrix * vec4(modifiedPosition, 1.0));
-    }
-    else fragPos = vec3(ModelMatrix * vec4(surf, 1.0));
-    // }
-    // if(modifiedPosition.y > -0.4){
-         //fragPos = vec3(ModelMatrix * vec4(surface, 1.0));
-    //}
-    gl_Position = ProjectionMatrix * ViewMatrix * vec4(fragPos, 1.0);
+    
+    fragPos = vec3(ModelMatrix * vec4(modifiedPosition, 1.0));
+    caustique = vec3(ModelMatrix * vec4(caustique, 1.0));
+    clipSpace = ProjectionMatrix * ViewMatrix * ModelMatrix * vec4(modifiedPosition.x, modifiedPosition.y, modifiedPosition.z, 1);
+    gl_Position = clipSpace;
 
 }
