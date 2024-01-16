@@ -12,6 +12,8 @@
   cmake --build .
 ```
 
+if you have the error : -lassimp is not found, modify the CMakeLists.txt of the project into the "include directories" section by adding the absolute path to the assimp library that you previously installed.
+
 # Third step : Build project
 ```bash
   path/to/your/project/folder
@@ -26,4 +28,4 @@
    cd build
    make -j
   ./launch-TP1.sh
-``
+```
