@@ -531,6 +531,7 @@ void Water::simulateOnde(Sphere s, bool &sphereWasIntersectingWater, glm::vec3 &
     {
         if (sphereWasIntersectingWater == true)
         {
+            nbIntersections = (nbIntersections + 1) % 4;
             donneesOndes[nbIntersections][0] = abs(departMouvement.y - intersection.y) / 5;
             donneesOndes[nbIntersections][1] = 0;
             firstIntersections[nbIntersections] = intersection;
