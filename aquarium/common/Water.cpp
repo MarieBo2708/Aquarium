@@ -113,17 +113,7 @@ void Water::createAquarium()
         this->indices.push_back((i - 1) * (resolution + 1) + count);
         this->indices.push_back((i - 1) * (resolution + 1));
     }
-    // MUR DE DROITE
-    for (int i = resolution; i > 0; i--)
-    {
-        this->indices.push_back((i + 1) * (resolution + 1) - 1);
-        this->indices.push_back((i + 1) * (resolution + 1) - 1 + count);
-        this->indices.push_back(i * (resolution + 1) - 1);
-
-        this->indices.push_back((i + 1) * (resolution + 1) - 1 + count);
-        this->indices.push_back(i * (resolution + 1) - 1 + count);
-        this->indices.push_back(i * (resolution + 1) - 1);
-    }
+    
     // MUR DE DEVANT
     for (int i = 0; i < resolution; i++)
     {
@@ -135,6 +125,19 @@ void Water::createAquarium()
         this->indices.push_back(i + count + 1);
         this->indices.push_back(i + 1);
     }
+
+    // MUR DE DROITE
+    for (int i = resolution; i > 0; i--)
+    {
+        this->indices.push_back((i + 1) * (resolution + 1) - 1);
+        this->indices.push_back((i + 1) * (resolution + 1) - 1 + count);
+        this->indices.push_back(i * (resolution + 1) - 1);
+
+        this->indices.push_back((i + 1) * (resolution + 1) - 1 + count);
+        this->indices.push_back(i * (resolution + 1) - 1 + count);
+        this->indices.push_back(i * (resolution + 1) - 1);
+    }
+    
     // MUR DU HAUT
     for (int i = 0; i < resolution; i++)
     {
